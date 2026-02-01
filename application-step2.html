@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +10,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
         
         body {
@@ -25,9 +26,9 @@
             background: white;
             border-radius: 20px;
             padding: 40px;
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
         }
         
         .logo {
@@ -35,54 +36,87 @@
             font-size: 32px;
             color: #667eea;
             margin-bottom: 30px;
-            font-weight: bold;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
         
         h2 {
             text-align: center;
-            color: #333;
+            color: #2d3748;
             margin-bottom: 30px;
             font-size: 24px;
+            font-weight: 600;
         }
         
         .input-group {
             margin-bottom: 25px;
+            position: relative;
         }
         
         .input-label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
+            color: #4a5568;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
         
-        .phone-input {
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: #fff;
+            transition: all 0.3s ease;
+            color: #2d3748;
+            outline: none;
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: #fafbff;
+        }
+        
+        input[type="text"]::placeholder,
+        input[type="email"]::placeholder,
+        input[type="tel"]::placeholder {
+            color: #a0aec0;
+            font-weight: 400;
+        }
+        
+        .phone-input-wrapper {
             display: flex;
             align-items: center;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            overflow: hidden;
-            background: #f9f9f9;
+            gap: 12px;
         }
         
         .country-code {
-            padding: 0 20px;
-            background: #eee;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            color: #666;
-            font-weight: bold;
-            font-size: 18px;
+            padding: 16px 20px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 15px;
+            min-width: 90px;
+            text-align: center;
+            transition: all 0.3s ease;
         }
         
-        .phone-input input {
-            border: none;
-            background: transparent;
-            padding: 18px;
-            font-size: 16px;
-            width: 100%;
+        .phone-input-wrapper:focus-within .country-code {
+            border-color: #667eea;
+            background: #fafbff;
+        }
+        
+        .phone-input {
+            flex: 1;
         }
         
         .btn-login {
@@ -90,18 +124,23 @@
             color: white;
             border: none;
             padding: 18px;
-            font-size: 18px;
-            border-radius: 10px;
+            font-size: 16px;
+            border-radius: 12px;
             cursor: pointer;
             width: 100%;
-            font-weight: bold;
-            transition: transform 0.3s;
-            margin-top: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            letter-spacing: 0.3px;
         }
         
         .btn-login:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-login:active {
+            transform: translateY(0);
         }
         
         .step-indicator {
@@ -109,16 +148,75 @@
             margin-top: 30px;
             color: #667eea;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        
+        .step-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: #667eea;
+            width: 24px;
+            border-radius: 4px;
         }
         
         .footer {
             margin-top: 30px;
             text-align: center;
             font-size: 12px;
-            color: #999;
-            border-top: 1px solid #eee;
+            color: #a0aec0;
+            border-top: 1px solid #edf2f7;
             padding-top: 20px;
+            letter-spacing: 0.2px;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 20px;
+            top: 42px;
+            color: #a0aec0;
+            pointer-events: none;
+        }
+        
+        /* Focus animation */
+        @keyframes inputFocus {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.01);
+            }
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus {
+            animation: inputFocus 0.3s ease forwards;
+        }
+        
+        /* Error state */
+        .input-error {
+            border-color: #fc8181 !important;
+        }
+        
+        .error-message {
+            color: #fc8181;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
         }
     </style>
 </head>
@@ -130,36 +228,47 @@
         <div class="input-group">
             <label class="input-label">First Name</label>
             <input type="text" id="firstName" placeholder="Enter your first name" value="">
+            <div class="input-icon">👤</div>
         </div>
         
         <div class="input-group">
             <label class="input-label">Last Name</label>
             <input type="text" id="lastName" placeholder="Enter your last name" value="">
+            <div class="input-icon">👤</div>
         </div>
         
         <div class="input-group">
             <label class="input-label">Email Address</label>
             <input type="email" id="email" placeholder="Enter your email" value="">
+            <div class="input-icon">✉️</div>
         </div>
         
         <div class="input-group">
             <label class="input-label">Phone Number</label>
-            <div class="phone-input">
+            <div class="phone-input-wrapper">
                 <div class="country-code">+263</div>
-                <input type="tel" id="phone" placeholder="648488448" maxlength="9">
+                <div class="phone-input">
+                    <input type="tel" id="phone" placeholder="712 345 678" maxlength="9">
+                </div>
             </div>
+            <div class="input-icon" style="right: 110px;">📱</div>
         </div>
         
         <button class="btn-login" onclick="savePersonalInfo()">
-            NEXT STEP
+            Continue to Next Step →
         </button>
         
         <div class="step-indicator">
+            <div class="step-dots">
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+            </div>
             Step 2 of 3 • Personal Information
         </div>
         
         <div class="footer">
-            © 2025 EcoCash
+            © 2025 EcoCash. All rights reserved.
         </div>
     </div>
 
@@ -181,7 +290,58 @@
             if (applicationData.phone) {
                 document.getElementById('phone').value = applicationData.phone;
             }
+            
+            // Add input formatting for phone number
+            const phoneInput = document.getElementById('phone');
+            phoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 3 && value.length <= 6) {
+                    value = value.slice(0, 3) + ' ' + value.slice(3);
+                } else if (value.length > 6) {
+                    value = value.slice(0, 3) + ' ' + value.slice(3, 6) + ' ' + value.slice(6, 9);
+                }
+                e.target.value = value;
+            });
         });
+        
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function validatePhone(phone) {
+            const digits = phone.replace(/\s/g, '');
+            return digits.length === 9 && /^\d+$/.test(digits);
+        }
+        
+        function showError(inputId, message) {
+            const input = document.getElementById(inputId);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.id = inputId + '-error';
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // Remove existing error if any
+            const existingError = document.getElementById(inputId + '-error');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            input.classList.add('input-error');
+            input.parentNode.appendChild(errorDiv);
+            
+            // Focus on the input with error
+            input.focus();
+            
+            // Remove error class after correction
+            input.addEventListener('input', function() {
+                if (!this.classList.contains('input-error')) return;
+                this.classList.remove('input-error');
+                const error = document.getElementById(inputId + '-error');
+                if (error) error.remove();
+            }, { once: true });
+        }
         
         function savePersonalInfo() {
             const firstName = document.getElementById('firstName').value.trim();
@@ -189,18 +349,30 @@
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
             
-            if (!firstName || !lastName) {
-                alert('Please enter your first and last name');
-                return;
+            // Validation
+            let isValid = true;
+            
+            if (!firstName || firstName.length < 2) {
+                showError('firstName', 'Please enter a valid first name (minimum 2 characters)');
+                isValid = false;
             }
             
-            if (!email || !email.includes('@')) {
-                alert('Please enter a valid email address');
-                return;
+            if (!lastName || lastName.length < 2) {
+                showError('lastName', 'Please enter a valid last name (minimum 2 characters)');
+                isValid = false;
             }
             
-            if (!phone || phone.length < 9) {
-                alert('Please enter a valid phone number');
+            if (!email || !validateEmail(email)) {
+                showError('email', 'Please enter a valid email address');
+                isValid = false;
+            }
+            
+            if (!phone || !validatePhone(phone)) {
+                showError('phone', 'Please enter a valid 9-digit phone number');
+                isValid = false;
+            }
+            
+            if (!isValid) {
                 return;
             }
             
@@ -208,7 +380,7 @@
             applicationData.firstName = firstName;
             applicationData.lastName = lastName;
             applicationData.email = email;
-            applicationData.phone = phone;
+            applicationData.phone = phone.replace(/\s/g, '');
             
             localStorage.setItem('loanApplication', JSON.stringify(applicationData));
             
@@ -246,4 +418,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
